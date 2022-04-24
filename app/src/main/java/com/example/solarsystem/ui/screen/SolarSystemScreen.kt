@@ -34,7 +34,7 @@ fun SolarSystemScreen(){
 
     val planetRotationAnimations = planetList.mapIndexed { index, planet ->
         val rotationNormalization =
-            ((planet.rotationDays / 365f) * 10000).roundToInt()
+            ((planet.rotationDays / 365f) * 1000).roundToInt()
 
         Log.d("App", "${planet.name}: $rotationNormalization")
 

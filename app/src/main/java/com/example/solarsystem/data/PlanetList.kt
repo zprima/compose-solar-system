@@ -36,25 +36,25 @@ val planetList = listOf(
         representationColorHex = "#d4b50a",
         distanceFromSun = 778.3f
     ),
-//    Planet(
-//        name = "Saturn",
-//        rotationDays = 29 * 365,
-//        mass = 0,
-//        representationColorHex = "#0ad43a",
-//        distanceFromSun = 1427f
-//    ),
-//    Planet(
-//        name = "Uranus",
-//        rotationDays = 84 * 365,
-//        mass = 0,
-//        representationColorHex = "#329cfc",
-//        distanceFromSun = 2871f
-//    ),
-//    Planet(
-//        name = "Neptune",
-//        rotationDays = 164 * 365,
-//        mass = 0,
-//        representationColorHex = "#b1daff",
-//        distanceFromSun = 4497f
-//    ),
+    Planet(
+        name = "Saturn",
+        rotationDays = 29 * 365,
+        mass = 0,
+        representationColorHex = "#0ad43a",
+        distanceFromSun = 1427f
+    ),
+    Planet(
+        name = "Uranus",
+        rotationDays = 84 * 365,
+        mass = 0,
+        representationColorHex = "#329cfc",
+        distanceFromSun = 2871f
+    ),
+    Planet(
+        name = "Neptune",
+        rotationDays = 164 * 365,
+        mass = 0,
+        representationColorHex = "#b1daff",
+        distanceFromSun = 4497f
+    ),
 )

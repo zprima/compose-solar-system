@@ -10,10 +10,14 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,15 +30,17 @@ import com.example.solarsystem.util.radians
 import kotlin.math.*
 
 @Composable
-fun SolarSystemScreen(){
-    val planetMaxDistance = remember { planetList.maxOf { it.distanceFromSun } }
-    val planetMinDistance = remember { planetList.minOf { it.distanceFromSun } }
+fun SolarSystemScreen(selectedPlanetList: SnapshotStateList<List<Planet>>){
+    val planetList = selectedPlanetList[0]
+
+    val planetMaxDistance = remember(planetList) { planetList.maxOf { it.distanceFromSun } }
+    val planetMinDistance = 0
 
     val infiniteTransition = rememberInfiniteTransition()
 
     val planetRotationAnimations = planetList.mapIndexed { index, planet ->
         val rotationNormalization =
-            ((planet.rotationDays / 365f) * 1000).roundToInt()
+            ((planet.rotationDays / 365f) * 10000).roundToInt()
 
         Log.d("App", "${planet.name}: $rotationNormalization")
 
@@ -94,6 +100,13 @@ fun SolarSystemScreen(){
                     planet,
                 )
 
+                drawCircle(
+                    color = Color.White.copy(alpha = 0.1f),
+                    center = center,
+                    radius = planetPosition.x - center.x,
+                    style = Stroke(width = 10f)
+                )
+
 //                drawPlanet(
 //                    planetPosition,
 //                    planet,
@@ -131,10 +144,4 @@ fun DrawScope.drawPlanet(
         planetPosition.y,
         paint
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SolarSystemScreenPreview(){
-    SolarSystemScreen()
 }

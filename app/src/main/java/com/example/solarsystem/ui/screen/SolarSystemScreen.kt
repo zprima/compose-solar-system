@@ -7,7 +7,10 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -24,14 +27,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.solarsystem.data.Planet
 import com.example.solarsystem.data.planetList
 import com.example.solarsystem.util.radians
 import kotlin.math.*
 
 @Composable
-fun SolarSystemScreen(selectedPlanetList: SnapshotStateList<List<Planet>>){
-    val planetList = selectedPlanetList[0]
+fun SolarSystemScreen(
+    solarSystemViewModel: SolarSystemViewModel = viewModel()
+){
+    val uiState = solarSystemViewModel.uiState
+
+    val planetList = uiState.planets
 
     val planetMaxDistance = remember(planetList) { planetList.maxOf { it.distanceFromSun } }
     val planetMinDistance = 0
@@ -111,6 +119,16 @@ fun SolarSystemScreen(selectedPlanetList: SnapshotStateList<List<Planet>>){
 //                    planetPosition,
 //                    planet,
 //                )
+            }
+        }
+
+        Column() {
+            Button(onClick = { solarSystemViewModel.zoomIn() }) {
+                Text("+", color = Color.White, fontSize = 16.sp)
+            }
+
+            Button(onClick = { solarSystemViewModel.zoomOut() }) {
+                Text("-", color = Color.White, fontSize = 16.sp)
             }
         }
     }

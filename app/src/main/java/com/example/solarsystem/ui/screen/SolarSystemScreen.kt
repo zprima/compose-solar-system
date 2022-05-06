@@ -6,9 +6,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +34,7 @@ import kotlin.math.*
 @Composable
 fun SolarSystemScreen(
     solarSystemViewModel: SolarSystemViewModel = viewModel()
-){
+) {
     val uiState = solarSystemViewModel.uiState
 
     val planetList = uiState.planets
@@ -68,7 +66,8 @@ fun SolarSystemScreen(
     BoxWithConstraints(
         Modifier
             .fillMaxSize()
-            .background(Color.Black)) {
+            .background(Color.Black)
+    ) {
         val center = remember(
             key1 = constraints.maxWidth,
             key2 = constraints.maxHeight
@@ -79,8 +78,10 @@ fun SolarSystemScreen(
             )
         }
 
-        Canvas(modifier = Modifier
-            .fillMaxSize()){
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
 
             drawSun(center)
 
@@ -122,19 +123,22 @@ fun SolarSystemScreen(
             }
         }
 
-        Column() {
+        Column(
+            modifier = Modifier.fillMaxHeight().padding(bottom = 16.dp),
+            verticalArrangement = Arrangement.Bottom
+        ) {
             Button(onClick = { solarSystemViewModel.zoomIn() }) {
-                Text("+", color = Color.White, fontSize = 16.sp)
+                Text("+", color = Color.White, fontSize = 18.sp)
             }
 
             Button(onClick = { solarSystemViewModel.zoomOut() }) {
-                Text("-", color = Color.White, fontSize = 16.sp)
+                Text("-", color = Color.White, fontSize = 18.sp)
             }
         }
     }
 }
 
-fun DrawScope.drawSun(center: Offset){
+fun DrawScope.drawSun(center: Offset) {
     drawCircle(
         color = Color.Yellow,
         center = center,
@@ -145,7 +149,7 @@ fun DrawScope.drawSun(center: Offset){
 fun DrawScope.drawPlanet(
     planetPosition: Offset,
     planet: Planet
-){
+) {
     drawCircle(
         color = Color(planet.representationColorHex.toColorInt()),
         center = planetPosition,

@@ -4,7 +4,7 @@ val planetList = listOf(
     Planet(
         name = "Mercury",
         rotationDays = 88,
-        radius = 20f,
+        radius = 10f,
         representationColorHex = "#8c8c8c",
         distanceFromSun = 57.9f
     ),
@@ -18,7 +18,7 @@ val planetList = listOf(
     Planet(
         name = "Earth",
         rotationDays = 365,
-        radius = 20f,
+        radius = 25f,
         representationColorHex = "#0000ff",
         distanceFromSun = 149.6f
     ),
@@ -32,7 +32,7 @@ val planetList = listOf(
     Planet(
         name = "Jupiter",
         rotationDays = 11 * 365,
-        radius = 20f,
+        radius = 30f,
         representationColorHex = "#d4b50a",
         distanceFromSun = 778.3f
     ),
@@ -46,7 +46,7 @@ val planetList = listOf(
     Planet(
         name = "Uranus",
         rotationDays = 84 * 365,
-        radius = 20f,
+        radius = 15f,
         representationColorHex = "#329cfc",
         distanceFromSun = 2871f
     ),

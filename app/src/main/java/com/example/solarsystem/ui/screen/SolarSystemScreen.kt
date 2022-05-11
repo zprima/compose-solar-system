@@ -66,21 +66,38 @@ fun SolarSystemScreen(
 
     var scale by remember { mutableStateOf(1f) }
     val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
-        val newScale =  floor(scale * zoomChange)
-        val fScale = floor(scale)
+        val newScale = scale * zoomChange
 
-        Log.d("APPX", "prevScale $scale")
-        Log.d("APPX", "newScale $newScale")
-
-        if(newScale > fScale){
-            Log.d("APPX", "zoom in")
+        if(newScale > (scale + (newScale * 0.1f))){
             solarSystemViewModel.zoomIn()
-        } else if(newScale < fScale){
-            Log.d("APPX", "zoom out")
+        }
+        else if(newScale < (scale - (newScale * 0.1f))){
             solarSystemViewModel.zoomOut()
         }
 
-        scale *= zoomChange
+        scale = newScale
+
+
+//
+//        val newScale =  floor(scale * zoomChange * 100)
+//        val fScale = floor(scale * 100)
+//
+//        Log.d("APPX", "prevScale $scale")
+//        Log.d("APPX", "newScale $newScale")
+//        Log.d("APPX", "fScale $fScale")
+//
+//        if(newScale >= (fScale+15f)){
+//            Log.d("APPX", "zoom in")
+//            solarSystemViewModel.zoomIn()
+//        } else if(newScale <= (fScale)){
+//            Log.d("APPX", "zoom out")
+//            solarSystemViewModel.zoomOut()
+//        }
+//
+//        var nextScale = scale * zoomChange
+//        if(nextScale < 1f) nextScale = 1f
+//        Log.d("APPX", "nextScale $nextScale")
+//        scale = nextScale
     }
 
     BoxWithConstraints(

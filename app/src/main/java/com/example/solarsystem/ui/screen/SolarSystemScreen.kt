@@ -6,11 +6,13 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -21,6 +23,9 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,19 +41,15 @@ fun SolarSystemScreen(
     solarSystemViewModel: SolarSystemViewModel = viewModel()
 ) {
     val uiState = solarSystemViewModel.uiState
-
     val planetList = uiState.planets
 
     val planetMaxDistance = remember(planetList) { planetList.maxOf { it.distanceFromSun } }
     val planetMinDistance = 0
 
     val infiniteTransition = rememberInfiniteTransition()
-
-    val planetRotationAnimations = planetList.mapIndexed { index, planet ->
+    val planetRotationAnimations = planetList.mapIndexed { _, planet ->
         val rotationNormalization =
             ((planet.rotationDays / 365f) * 10000).roundToInt()
-
-        Log.d("App", "${planet.name}: $rotationNormalization")
 
         infiniteTransition.animateFloat(
             initialValue = 0f,
@@ -61,6 +62,25 @@ fun SolarSystemScreen(
                 repeatMode = RepeatMode.Restart
             )
         )
+    }
+
+    var scale by remember { mutableStateOf(1f) }
+    val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
+        val newScale =  floor(scale * zoomChange)
+        val fScale = floor(scale)
+
+        Log.d("APPX", "prevScale $scale")
+        Log.d("APPX", "newScale $newScale")
+
+        if(newScale > fScale){
+            Log.d("APPX", "zoom in")
+            solarSystemViewModel.zoomIn()
+        } else if(newScale < fScale){
+            Log.d("APPX", "zoom out")
+            solarSystemViewModel.zoomOut()
+        }
+
+        scale *= zoomChange
     }
 
     BoxWithConstraints(
@@ -81,6 +101,7 @@ fun SolarSystemScreen(
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
+                .transformable(state = state)
         ) {
 
             drawSun(center)
@@ -153,7 +174,7 @@ fun DrawScope.drawPlanet(
     drawCircle(
         color = Color(planet.representationColorHex.toColorInt()),
         center = planetPosition,
-        radius = 20f
+        radius = planet.radius
     )
 
     val paint = Paint()

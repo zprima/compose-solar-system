@@ -1,38 +1,29 @@
 package com.example.solarsystem.ui.screen
 
 import android.graphics.Paint
-import android.util.Log
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.DrawStyle
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.solarsystem.data.Planet
-import com.example.solarsystem.data.planetList
 import com.example.solarsystem.util.radians
 import kotlin.math.*
 
@@ -100,6 +91,33 @@ fun SolarSystemScreen(
 //        scale = nextScale
     }
 
+    val configuration = LocalConfiguration.current
+    val width = with(LocalDensity.current) { configuration.screenWidthDp.dp.toPx() }
+    val height = with(LocalDensity.current) { configuration.screenHeightDp.dp.toPx() }
+
+    val starAngle = infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = radians(360f).toFloat(),
+        animationSpec = infiniteRepeatable(
+            tween(
+                durationMillis = 280000,
+                easing = LinearEasing
+            ),
+            repeatMode = RepeatMode.Restart
+        )
+    )
+    val starPositions = remember(configuration) {
+        (1..100)
+            .map {
+                Offset(
+                    (0..width.toInt()).random().toFloat(),
+                    (0..height.toInt()).random().toFloat(),
+                )
+            }
+            .toMutableStateList()
+    }
+
+
     BoxWithConstraints(
         Modifier
             .fillMaxSize()
@@ -120,6 +138,8 @@ fun SolarSystemScreen(
                 .fillMaxSize()
                 .transformable(state = state)
         ) {
+
+            drawStars(starPositions, starAngle.value, center)
 
             drawSun(center)
 
@@ -162,7 +182,9 @@ fun SolarSystemScreen(
         }
 
         Column(
-            modifier = Modifier.fillMaxHeight().padding(bottom = 16.dp),
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(bottom = 16.dp),
             verticalArrangement = Arrangement.Bottom
         ) {
             Button(onClick = { solarSystemViewModel.zoomIn() }) {
@@ -174,6 +196,30 @@ fun SolarSystemScreen(
             }
         }
     }
+}
+
+fun DrawScope.drawStars(starPositions: List<Offset>, starAngle: Float, center: Offset){
+    starPositions.forEach {
+
+        val cosAngle = cos(starAngle)
+        val sinAngle = sin(starAngle)
+
+        val dx = it.x - center.x
+        val dy = it.y - center.y
+
+        var rx = (dx * cosAngle - dy * sinAngle)
+        var ry = (dx * sinAngle + dy * cosAngle)
+
+        rx += center.x
+        ry += center.y
+
+        drawCircle(
+            color = Color.White,
+            radius = listOf(1f, 2f).random(),
+            center = Offset(rx, ry)
+        )
+    }
+
 }
 
 fun DrawScope.drawSun(center: Offset) {

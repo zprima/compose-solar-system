@@ -199,11 +199,10 @@ fun SolarSystemScreen(
 }
 
 fun DrawScope.drawStars(starPositions: List<Offset>, starAngle: Float, center: Offset){
+    val cosAngle = cos(starAngle)
+    val sinAngle = sin(starAngle)
+
     starPositions.forEach {
-
-        val cosAngle = cos(starAngle)
-        val sinAngle = sin(starAngle)
-
         val dx = it.x - center.x
         val dy = it.y - center.y
 

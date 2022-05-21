@@ -59,36 +59,14 @@ fun SolarSystemScreen(
     val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
         val newScale = scale * zoomChange
 
-        if(newScale > (scale + (newScale * 0.1f))){
+        if(newScale > (scale + (newScale * 0.01f))){
             solarSystemViewModel.zoomIn()
         }
-        else if(newScale < (scale - (newScale * 0.1f))){
+        else if(newScale < (scale - (newScale * 0.01f))){
             solarSystemViewModel.zoomOut()
         }
 
         scale = newScale
-
-
-//
-//        val newScale =  floor(scale * zoomChange * 100)
-//        val fScale = floor(scale * 100)
-//
-//        Log.d("APPX", "prevScale $scale")
-//        Log.d("APPX", "newScale $newScale")
-//        Log.d("APPX", "fScale $fScale")
-//
-//        if(newScale >= (fScale+15f)){
-//            Log.d("APPX", "zoom in")
-//            solarSystemViewModel.zoomIn()
-//        } else if(newScale <= (fScale)){
-//            Log.d("APPX", "zoom out")
-//            solarSystemViewModel.zoomOut()
-//        }
-//
-//        var nextScale = scale * zoomChange
-//        if(nextScale < 1f) nextScale = 1f
-//        Log.d("APPX", "nextScale $nextScale")
-//        scale = nextScale
     }
 
     val configuration = LocalConfiguration.current
@@ -107,10 +85,10 @@ fun SolarSystemScreen(
         )
     )
     val starPositions = remember(configuration) {
-        (1..100)
+        (1..400)
             .map {
                 Offset(
-                    (0..width.toInt()).random().toFloat(),
+                    (-width.toInt()..width.toInt()*2).random().toFloat(),
                     (0..height.toInt()).random().toFloat(),
                 )
             }
